@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- namespace：当前XML文件用于配置哪个接口中抽象方法对应的SQL语句 -->
+<mapper namespace="cn.aylcy.mapper.UserMapper">
+
+	<!-- 用户注册的方法 -->
+	<!-- Integer regUser(User User) -->
+	<insert id="regUser" useGeneratedKeys="true" keyProperty="uid">
+		INSERT
+		INTO
+			tb_user(
+				username, password
+			)
+		VALUES(
+				#{username}, #{password}
+			)
+	</insert>
+
+	<!--通过用户名查找用户信息-->
+	<!--User findUserByUserName(String username)-->
+	<select id="findUserByUserName" resultType="cn.aylcy.entity.User">
+		SELECT
+			 uid,username,password,isRoot
+		FROM
+			tb_user
+		WHERE
+			username = #{username}
+	</select>
+</mapper>
+
+
+
+
+
+

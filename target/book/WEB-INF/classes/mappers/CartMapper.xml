@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- namespace：当前XML文件用于配置哪个接口中抽象方法对应的SQL语句 -->
+<mapper namespace="cn.aylcy.mapper.CartMapper">
+
+	<!-- 添加 -->
+	<!-- Integer addCart(Cart cart) -->
+	<insert id="addCart" useGeneratedKeys="true" keyProperty="cid">
+		INSERT
+		INTO
+			tb_cart(
+				uid,bid,`count`
+			)
+		VALUES(
+				#{uid},#{bid},#{count}
+			)
+	</insert>
+
+	<!--查询当前登陆用户的所有信息（未删除的）-->
+	<!--List<Cart> findCartAll(Integer uid)-->
+	<select id="findCartAll" resultType="cn.aylcy.entity.CartVO">
+		SELECT
+			 cid,uid,tb.bid,`count`,titleName,unitPrice
+		FROM
+			tb_cart tc
+		JOIN
+			tb_book tb
+		ON
+			tc.bid = tb.bid
+		WHERE
+			uid = #{uid}
+		AND
+			isDelete = 0
+	</select>
+
+	<!--查询当前登陆用户的所有信息（未删除的）（管理员专用）-->
+	<!--List<Cart> findCartAllByRoot(Integer uid)-->
+	<select id="findCartAllByRoot" resultType="cn.aylcy.entity.CartVO">
+		SELECT
+			 cid,uid,tb.bid,`count`,titleName,unitPrice
+		FROM
+			tb_cart tc
+		JOIN
+			tb_book tb
+		ON
+			tc.bid = tb.bid
+		WHERE
+			isDelete = 0
+	</select>
+
+	<!--通过cid删除当前信息-->
+	<!--Integer deleteByCid(Integer cid)-->
+	<update id="deleteByCid">
+		update
+			 tb_cart
+		SET
+			isDelete = 1
+		WHERE
+			cid = #{cid}
+	</update>
+</mapper>
+
+
+
+
+
+

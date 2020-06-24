@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>购物车</title>
+    <script typet="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+    <style>
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        #box {
+            width: 1000px;
+            height: 500px;
+            margin: auto;
+        }
+
+        #myh1 {
+            text-align: center;
+        }
+
+        #select {
+            width: 100px;
+            height: 18px;
+            font-size: 11px;
+            text-align: center;
+            border: #ccc 1px solid;
+            border-radius: 15px;
+            position: relative;
+            left: 680px;
+            /*b9f08b*/
+        }
+
+        #tab {
+            margin: 0 auto;
+            margin-top: 40px;
+        }
+
+        #tab td {
+            width: 100px;
+            text-align: center;
+        }
+
+        #footer {
+            width: 600px;
+            margin: auto;
+            background-color: skyblue;
+        }
+
+        #footer div {
+            background-color: #2b93ff;
+            color: white;
+            width: 100px;
+        }
+
+        #deleteall {
+            background-color: #2b93ff;
+            color: white;
+            border: 0;
+            border-radius: 15px;
+        }
+
+        #countNum {
+            float: left;
+        }
+
+        #countPrice {
+            margin: auto;
+        }
+
+        #deleteall {
+            float: right;
+        }
+    </style>
+</head>
+<body>
+<div style="text-align: center">
+
+    <a href="index.html">首页</a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="cart.html">购物车</a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="order.html">订单中心</a>&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+    <div id="box">
+        <h1 id="myh1">我的购物车详情</h1>
+        <table id="tab" border="1" cellpadding="0" cellspacing="0">
+            <thead style="background-color: #2b93ff;color:white">
+            <tr>
+                <td>选择商品</td>
+                <td>书名</td>
+                <td>数量</td>
+                <td>单价</td>
+                <td>价格小计</td>
+                <td>操作</td>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+
+            </tbody>
+        </table>
+
+        <div id="footer">
+            <div id="countNum"><span id="sum_count"></span></div>
+            <div id="countPrice"><span id="sum_monery"></span></div>
+            <button id="deleteall" onclick="addOrder()">立即购买</button>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+
+    $(function () {
+        $.ajax({
+            "url": "/user/getLoginUser",
+            "dataType": "json",
+            "type": "POST",
+            "success": function (obj) {
+                if (obj.state == 200) {
+                    if (obj.data != null && obj.data != "") {
+                        $.ajax({
+                            "url": "/cart/findCartAll",
+                            "dataType": "json",
+                            "type": "POST",
+                            "success": function (obj) {
+                                $("#tbody").empty();
+                                if (obj.state == 200) {
+                                    var sum_count = 0;
+                                    var sum_monery = 0.0;
+                                    for (var i = 0; i < obj.data.length; i++) {
+                                        $("#tbody").append(
+                                            "<tr>" +
+                                            "<td><input type='checkbox' class='checkbox' value='" + obj.data[i].cid + "'/></td>" +
+                                            "<td>" + obj.data[i].titleName + "</td>" +
+                                            "<td>" + obj.data[i].count + "</td>" +
+                                            "<td>" + obj.data[i].unitPrice + "</td>" +
+                                            "<td>" + obj.data[i].unitPrice * obj.data[i].count + "</td>" +
+                                            "<td><button type='button' onclick='deleteCart(" + obj.data[i].cid + ")'>删除</button></td>" +
+                                            "</tr>"
+                                        );
+                                        sum_count += obj.data[i].count;
+                                        sum_monery += obj.data[i].unitPrice * obj.data[i].count;
+                                    }
+                                    $("#sum_count").text("总数:" + sum_count);
+                                    $("#sum_monery").text("总价:" + sum_monery);
+                                } else {
+                                    alert(obj.message);
+                                }
+                            }
+                        });
+                    } else {
+                        alert("系统监测你未登录，请先登录!");
+
+                    }
+                } else {
+                    alert(obj.message);
+                }
+            }
+        });
+    })
+
+    function deleteCart(cid) {
+        $.ajax({
+            "url": "/cart/deleteByCid",
+            "data": "cid=" + cid,
+            "dataType": "json",
+            "type": "POST",
+            "success": function (obj) {
+                $("#tbody").empty();
+                if (obj.state == 200) {
+                    alert("删除成功！");
+                    location.reload();
+                } else {
+                    alert(obj.message);
+                }
+            }
+        });
+    }
+</script>
+</html>

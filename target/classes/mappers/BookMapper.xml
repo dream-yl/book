@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- namespace：当前XML文件用于配置哪个接口中抽象方法对应的SQL语句 -->
+<mapper namespace="cn.aylcy.mapper.BookMapper">
+
+	<!-- 添加 -->
+	<!-- Integer addBook(Book book) -->
+	<insert id="addBook" useGeneratedKeys="true" keyProperty="bid">
+		INSERT
+		INTO
+			tb_book(
+			titleName,authorName,unitPrice,briefIntroduction
+			)
+		VALUES(
+			#{titleName},#{authorName},#{unitPrice},#{briefIntroduction}
+			)
+	</insert>
+
+	<!--编辑-->
+	<!--Integer updateBook(Book book)-->
+	<update id="updateBook">
+		UPDATE
+			tb_book
+		SET
+			titleName = #{titleName},
+			authorName = #{authorName},
+			unitPrice = #{unitPrice},
+			briefIntroduction = #{briefIntroduction}
+		WHERE
+			bid = #{bid}
+	</update>
+
+	<!--删除-->
+	<!--Integer deleteBook(Integer id)-->
+	<update id="deleteBook">
+		UPDATE
+			tb_book
+		SET
+			isShelf = 1
+		WHERE
+			bid = #{id}
+	</update>
+
+	<!--通过id查询详情-->
+	<!--Book findBookById(Integer id)-->
+	<select id="findBookById" resultType="cn.aylcy.entity.Book">
+		SELECT
+			bid,
+			titleName,
+			authorName,
+			unitPrice,
+			briefIntroduction,
+			isShelf
+		FROM
+			tb_book
+		WHERE
+			bid = #{id}
+	</select>
+
+	<!--查询全部未删除的-->
+	<!--List<Book> findBookAll()-->
+	<select id="findBookAll" resultType="cn.aylcy.entity.Book">
+		SELECT
+			bid,
+			titleName,
+			authorName,
+			unitPrice,
+			briefIntroduction,
+			isShelf
+		FROM
+			tb_book
+		WHERE
+			<if test="titleName!=null and titleName!=''">titleName LIKE '%${titleName}%' AND </if>
+			isShelf = 0
+	</select>
+</mapper>
+
+
+
+
+
+

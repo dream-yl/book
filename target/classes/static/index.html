@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+    <script typet="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        ul {
+            list-style: none;
+        }
+        .box {
+            width: 958px;
+            border: 1px solid #ddd;
+            margin: 50px auto 0;
+            overflow: hidden;
+        }
+        .title {
+            width: 918px;
+            height: 50px;
+            border-bottom: 1px solid #ddd;
+            margin: 0 auto;
+        }
+        .title span {
+            display: inline-block;
+            height: 50px;
+            border-bottom: 2px solid red;
+            font: 18px '微软雅黑';
+            color: #000;
+            line-height: 50px;
+            padding: 0 15px;
+        }
+        .box ul {
+            width: 950px;
+            margin: 20px 0 13px 20px;
+        }
+        .box ul li {
+            width: 160px;
+            height: 120px;
+            float: left;
+            margin: 0 29px 25px 0;
+        }
+        body {
+           /* background-color: blue;*/
+        }
+        a {
+            text-decoration: none;
+            color:#333;
+        }
+    </style>
+</head>
+<body>
+<div style="text-align: center">
+
+    <a href="index.html">首页</a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="cart.html">购物车</a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="order.html">订单中心</a>&nbsp;&nbsp;&nbsp;&nbsp;
+
+</div>
+<div class="search_con fl" style="float: right">
+    <input type="text" id="select_name" placeholder="搜索商品">
+    <input type="button" onclick="search()" value="搜索">
+</div>
+<strong id="username" style="float: right"></strong>
+<div class='box'>
+    <div class="title"><span>列表</span>
+        <button type="button" class="hidden" data-toggle="" data-target="#myModal" id="addMT">
+            添加书籍
+        </button>
+    </div>
+    <ul id="tbody">
+        <li><a href="#"><img src="" alt="图片"></a></li>
+    </ul>
+</div>
+
+<!-- 模态框 -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+                <h4 class="modal-title">添加编辑书籍</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+                <div><input type="hidden" id = "flag" /></div>
+                <div>书名：<input type="text" id = "add_titleName" /></div>
+                <div>作者：<input type="text" id = "add_authorName" /></div>
+                <div>单价：<input type="number" id = "add_unitPrice"  value="0.0"/></div>
+                <div>简介：<input type="text" id = "add_briefIntroduction" /></div>
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="add_book()">保存</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script typet="text/javascript">
+    $(function () {
+        $.ajax({
+            "url": "/user/getLoginUser",
+            "dataType": "json",
+            "type": "POST",
+            "success": function (obj) {
+                if (obj.state == 200) {
+                    if (obj.data != null && obj.data != "") {
+                        $("#username").text(obj.data);
+                        if("root" == obj.data){
+                            $("#username").append("<a href='add_update_book.html'>&nbsp;&nbsp;管理</a>");
+                            $("#addMT").attr("data-toggle","modal");
+                            $("#addMT").attr("class","btn btn-primary");
+                        }
+                    } else {
+                        $("#username").append("<a href='login.html'>去登录</a>");
+
+                    }
+                } else {
+                    alert(obj.message);
+                }
+            }
+        });
+
+        $.ajax({
+            "url": "/books/findBookAll",
+            "dataType": "json",
+            "type": "POST",
+            "success": function (obj) {
+                if (obj.state == 200) {
+                    $("#tbody").empty();
+                    for (var i = 0; i < obj.data.length; i++) {
+                        $("#tbody").append(
+                            "<li>"
+                            + " <div><a href='book_detail.html?bid=" + obj.data[i].bid + "'><span>" + obj.data[i].titleName.substring(0,18) + "</span></a></div> "
+                            + " <div><span>" + obj.data[i].authorName + "</span></div>  "
+                            + " <div><span>" + obj.data[i].unitPrice + "</span></div>  "
+                            + " <div><span>" + obj.data[i].briefIntroduction.substring(0,5) + "....</span></div>"
+                            + " </li>"
+                        );
+                    }
+                } else {
+                    alert(obj.message);
+                }
+            }
+        });
+    })
+
+    function search(){
+        $.ajax({
+            "url": "/books/findBookAll",
+            "data": "titleName="+$("#select_name").val(),
+            "dataType": "json",
+            "type": "POST",
+            "success": function (obj) {
+                if (obj.state == 200) {
+                    $("#tbody").empty();
+                    if(obj.data.length < 1){
+                        $("#tbody").append(
+                            "<span>没有查询到相关商品！</span>"
+                        );
+                        return;
+                    }
+                    for (var i = 0; i < obj.data.length; i++) {
+                        $("#tbody").append(
+                            "<li>"
+                            + " <div><a href='book_detail.html?bid=" + obj.data[i].bid + "'><span>" + obj.data[i].titleName + "</span></a></div> "
+                            + " <div><span>" + obj.data[i].authorName + "</span></div>  "
+                            + " <div><span>" + obj.data[i].unitPrice + "</span></div>  "
+                            + " <div><span>" + obj.data[i].briefIntroduction.substring(0,5) + "....</span></div>"
+                            + " </li>"
+                        );
+                    }
+                } else {
+                    alert(obj.message);
+                }
+            }
+        });
+    }
+    function  add_book() {
+        var titleName = $("#add_titleName").val();
+        var authorName = $("#add_authorName").val();
+        var unitPrice = $("#add_unitPrice").val()+"";
+        var briefIntroduction = $("#add_briefIntroduction").val();
+        var bid = $("#flag").val();
+        if(bid == null || bid == ""){
+            var addData = "titleName="+titleName
+                        +"&authorName="+authorName
+                        +"&unitPrice="+unitPrice
+                        +"&briefIntroduction="+briefIntroduction;
+            $.ajax({
+                "url": "/books/addBook",
+                "data":addData,
+                "dataType": "json",
+                "type": "POST",
+                "success": function (obj) {
+                    if (obj.state == 200) {
+                        location.reload();
+                    } else {
+                        alert(obj.message);
+                    }
+                }
+            });
+        }
+    }
+</script>
+</html>

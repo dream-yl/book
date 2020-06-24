@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- namespace：当前XML文件用于配置哪个接口中抽象方法对应的SQL语句 -->
+<mapper namespace="cn.aylcy.mapper.OrderMapper">
+
+	<!-- 添加order -->
+	<!-- Integer addOrder(Order order) -->
+	<insert id="addOrder" useGeneratedKeys="true" keyProperty="oid">
+		INSERT
+		INTO
+			tb_order(
+			uid,sumPrice,purchaseName,address,phone,
+			eMail,createTime
+
+			)
+		VALUES(
+			#{uid}, #{sumPrice},#{purchaseName}, #{address},
+			#{phone}, #{eMail},#{createTime}
+			)
+	</insert>
+
+	<!-- 添加orderitem -->
+	<!-- Integer addOrderItem(OrderItem orderItem) -->
+	<insert id="addOrderItem" useGeneratedKeys="true" keyProperty="iid">
+		INSERT
+		INTO
+			tb_order_item(
+			oid,bid,`count`,price
+			)
+		VALUES(
+			#{oid}, #{bid},#{count}, #{price}
+			)
+	</insert>
+
+	<!-- 删除 -->
+	<!-- Integer deleteOrder(Integer oid) -->
+	<update id="deleteOrder">
+		UPDATE
+			tb_order
+		SET
+			isDelete = 1
+		WHERE
+			oid = #{oid}
+	</update>
+
+	<!-- 通过uid获取所有的订单 -->
+	<!--  List<Order> findOrderAllByUid(Integer uid) -->
+	<select id="findOrderAllByUid" resultType="cn.aylcy.entity.Order">
+		SELECT
+			oid,uid,sumPrice,purchaseName,
+			address,phone,eMail,isState,isDelete,
+			createTime
+        FROM
+        	tb_order
+        WHERE
+        	uid = #{uid}
+        AND
+        	isDelete = 0
+	</select>
+
+	<!-- 通过订单id获取所有的明细 -->
+	<!-- List<OrderItem> findOrderItemByOid(Integer oid) -->
+	<select id="findOrderItemByOid" resultType="cn.aylcy.entity.OrderItem">
+		SELECT
+			iid,oid,bid,`count`,price
+        FROM
+        	tb_order_item
+        WHERE
+        	oid = #{oid}
+	</select>
+</mapper>
+
+
+
+
+
+
