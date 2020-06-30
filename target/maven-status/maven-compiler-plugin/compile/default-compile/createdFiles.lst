@@ -1,15 +1,20 @@
 cn\aylcy\entity\User.class
 cn\aylcy\mapper\CartMapper.class
+cn\aylcy\controller\OrderController.class
 cn\aylcy\mapper\BookMapper.class
 cn\aylcy\service\UserService.class
 cn\aylcy\service\ex\UserNotFoundException.class
 cn\aylcy\controller\BaseController.class
+cn\aylcy\service\OrderService.class
 cn\aylcy\service\impl\BookServiceImpl.class
+cn\aylcy\entity\Order.class
+cn\aylcy\entity\OrderItem.class
 cn\aylcy\service\ex\ServiceException.class
 cn\aylcy\service\impl\CartServiceImpl.class
 cn\aylcy\entity\CartVO.class
 cn\aylcy\mapper\UserMapper.class
 cn\aylcy\entity\Book.class
+cn\aylcy\service\impl\OrderServiceImpl.class
 cn\aylcy\controller\BookController.class
 cn\aylcy\controller\UserController.class
 cn\aylcy\controller\CartController.class
@@ -20,3 +25,4 @@ cn\aylcy\util\JsonResult.class
 cn\aylcy\ServletInitializer.class
 cn\aylcy\service\BookService.class
 cn\aylcy\service\CartService.class
+cn\aylcy\mapper\OrderMapper.class

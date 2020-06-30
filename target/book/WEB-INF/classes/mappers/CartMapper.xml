@@ -50,6 +50,23 @@
 			isDelete = 0
 	</select>
 
+	<!--通过cid查询信息-->
+	<!--CartVO findCartByCid(Integer cid)-->
+	<select id="findCartByCid" resultType="cn.aylcy.entity.CartVO">
+		SELECT
+			 cid,uid,tb.bid,`count`,titleName,unitPrice
+		FROM
+			tb_cart tc
+		JOIN
+			tb_book tb
+		ON
+			tc.bid = tb.bid
+		WHERE
+			isDelete = 0
+		AND
+			tc.cid = #{cid}
+	</select>
+
 	<!--通过cid删除当前信息-->
 	<!--Integer deleteByCid(Integer cid)-->
 	<update id="deleteByCid">

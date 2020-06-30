@@ -27,10 +27,10 @@
 		INSERT
 		INTO
 			tb_order_item(
-			oid,bid,`count`,price
+			oid,bid,`count`,price,titleName
 			)
 		VALUES(
-			#{oid}, #{bid},#{count}, #{price}
+			#{oid}, #{bid},#{count}, #{price},#{titleName}
 			)
 	</insert>
 
@@ -64,7 +64,7 @@
 	<!-- List<OrderItem> findOrderItemByOid(Integer oid) -->
 	<select id="findOrderItemByOid" resultType="cn.aylcy.entity.OrderItem">
 		SELECT
-			iid,oid,bid,`count`,price
+			iid,oid,bid,`count`,price,titleName
         FROM
         	tb_order_item
         WHERE

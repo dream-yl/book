@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <title>购物车</title>
     <script typet="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
     <style>
         a {
             text-decoration: none;
@@ -103,7 +107,38 @@
         <div id="footer">
             <div id="countNum"><span id="sum_count"></span></div>
             <div id="countPrice"><span id="sum_monery"></span></div>
-            <button id="deleteall" onclick="addOrder()">立即购买</button>
+            <button id="deleteall" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" id="addMT">
+                立即购买
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 模态框 -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+                <h4 class="modal-title">订单信息</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+                <div>购买者：<input type="text" id = "add_purchaseName" /></div>
+                <div>地址：<input type="text" id = "add_address" /></div>
+                <div>联系方式：<input type="text" id = "add_phone"/></div>
+                <div>e——mail：<input type="text" id = "add_eMail" /></div>
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="add_order()">保存</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+
         </div>
     </div>
 </div>
@@ -169,6 +204,45 @@
                 $("#tbody").empty();
                 if (obj.state == 200) {
                     alert("删除成功！");
+                    location.reload();
+                } else {
+                    alert(obj.message);
+                }
+            }
+        });
+    }
+
+    function add_order(){
+        var purchaseName = $("#add_purchaseName").val();
+        var address = $("#add_address").val();
+        var phone = $("#add_phone").val()+"";
+        var eMail = $("#add_eMail").val();
+        var cids = new Array();
+        $("#tbody tr").each(
+            function() {
+                var checked = ($(this).find("input[type='checkbox']")
+                    .prop('checked'));
+                if (checked == true) {
+                    cids.push($(this).find("input").val());
+                }
+            });
+        if(cids.length < 1){
+            alert("请勾选商品");
+            return;
+        }
+        var addData = "purchaseName="+purchaseName
+            +"&address="+address
+            +"&phone="+phone
+            +"&eMail="+eMail
+            +"&cids="+cids;
+        $.ajax({
+            "url": "/order/addOrder",
+            "data":addData,
+            "dataType": "json",
+            "type": "POST",
+            "success": function (obj) {
+                if (obj.state == 200) {
+                    alert("订单已经生成!");
                     location.reload();
                 } else {
                     alert(obj.message);
