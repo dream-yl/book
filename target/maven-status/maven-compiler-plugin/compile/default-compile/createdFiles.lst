@@ -3,6 +3,7 @@ cn\aylcy\mapper\CartMapper.class
 cn\aylcy\controller\OrderController.class
 cn\aylcy\mapper\BookMapper.class
 cn\aylcy\service\UserService.class
+cn\aylcy\controller\WeChatController.class
 cn\aylcy\service\ex\UserNotFoundException.class
 cn\aylcy\controller\BaseController.class
 cn\aylcy\service\OrderService.class
@@ -24,5 +25,7 @@ cn\aylcy\entity\Cart.class
 cn\aylcy\util\JsonResult.class
 cn\aylcy\ServletInitializer.class
 cn\aylcy\service\BookService.class
+cn\aylcy\entity\UserDemo.class
 cn\aylcy\service\CartService.class
+cn\aylcy\mapper\UserMapperDemo.class
 cn\aylcy\mapper\OrderMapper.class
